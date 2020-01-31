@@ -1,2 +1,2 @@
-# Virus_Control
+# Virus Control
 Spreading virus simulator using Celular Automata
