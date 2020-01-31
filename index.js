@@ -19,10 +19,11 @@ Definido:
             - Taxa de transmissao
             
         -- A transicao do estado da populacao em incubacao para doente, levando em conta:
+            - O tempo de incubaçao da doenca
             - O tempo em que ela foi incubada (baseado no historico)
 
-        -- A quantidade de pessoas recuperadas, levando em conta:
-            - O periodo de recuperacao da doenca
+        -- A transicao do estado da populacao de doente para recuperadas, levando em conta:
+            - O tempo de recuperacao da doenca
             - O tempo em que ela ja esta doente (baseado no historico)
 
 
