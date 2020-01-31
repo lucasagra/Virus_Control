@@ -1,11 +1,5 @@
 /*
-Ideias/problemas:
-
-    Como calcular a condicao necessaria para recuperar um
-    paciente doente? probabilidade diaria apos incubacao? Tempo fixo apos incubacao?
-
-    Levar em conta a faixa etarea?
-
+Ideias futuras:
     Usar o tamanho de cada celula e a densidade demografica
     para calcular a quantidade de pessoas ali contidas.
     (permitira utilizar no programa dados ja mapeados em mapas demograficos)
@@ -130,7 +124,7 @@ class Cell {
     processNeighbours() {
 
     }
-    
+
     print() {
         console.log("Day: ", this.day);
         console.log("Population: ", this.totalPop);
