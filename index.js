@@ -48,18 +48,22 @@ let incubationPeriod = 10;
 // Time in days to get better after get sick
 let restorePeriod = 7;
 
-// Avarage contact of a infected person with other people
-let sickPeopleContact = 2; 
+// Average contact of a infected person with other people
+let sickPeopleContact = 2;
 let regularPeopleContact = 10;
 
+// 
+let neighborAsymptomaticContact = 0.3;
+let neighborSymptomaticContact = 0.1;
+
 // Probability of transmission in contact
-let transmissionRate = 0.1; 
+let transmissionRate = 0.1;
 
 
 class Cell {
 
     constructor(pop, infectedRatio) {
-    
+
         // Total cell population
         this.totalPop = pop;
 
@@ -67,10 +71,10 @@ class Cell {
         this.infectedRegularPop = pop * infectedRatio;
 
         // Healthy population (targets)
-        this.healthyPop = pop * (1-infectedRatio);
+        this.healthyPop = pop * (1 - infectedRatio);
 
         // Infected sick population
-        this.infectedSickPop = 0; 
+        this.infectedSickPop = 0;
 
         // Recovered population
         this.recoveredPop = 0;
@@ -81,14 +85,20 @@ class Cell {
         // Current day (starting when the cell is infected)
         this.day = 1
 
+        // Probability of meeting a healthy person
+        this.healthyRatio = (this.healthyPop) / this.totalPop;
+
+        // Amount of people infected by neighbors
+        this.infectedByNeighbors = 0;
+
     }
 
     process() {
 
-        // Probability of meeting a healthy person
-        let healthyRatio = (this.healthyPop)/this.totalPop;
+        // Changed
+        this.healthyRatio = (this.healthyPop) / this.totalPop;
 
-    //// Healthy -> Infected
+        //// Healthy -> Infected
 
         let peopleContactedbyInfectedPeople;
 
@@ -96,41 +106,40 @@ class Cell {
         else peopleContactedbyInfectedPeople = (this.infectedSickPop * sickPeopleContact);
 
         // Total contacted people * Probability of a person be healthy (target) * Probability of Transmission
-        let newInfected = Math.round(peopleContactedbyInfectedPeople * healthyRatio * transmissionRate); 
-       
+        let newInfected = Math.round(peopleContactedbyInfectedPeople * this.healthyRatio * transmissionRate) + this.infectedByNeighbors;
+
         // Set a limit to new infected people if its bigger than the healthy popuplation
-        if(newInfected > this.healthyPop) newInfected = this.healthyPop;
+        if (newInfected > this.healthyPop) newInfected = this.healthyPop;
 
         this.infectedHistory.push(newInfected);
         this.infectedRegularPop += newInfected;
         this.healthyPop -= newInfected;
 
-    //// Infected -> Sick
-        if(this.day >= incubationPeriod) {
+        //// Infected -> Sick
+        if (this.day >= incubationPeriod) {
             let infectedToSick = this.infectedHistory[this.day - incubationPeriod];
             this.infectedRegularPop -= infectedToSick;
             this.infectedSickPop += infectedToSick;
         }
 
-    //// Sick -> Recover
-        if(this.day >= incubationPeriod+restorePeriod) {
+        //// Sick -> Recover
+        if (this.day >= incubationPeriod + restorePeriod) {
             let recovered = this.infectedHistory[this.day - incubationPeriod - restorePeriod];
             this.infectedSickPop -= recovered;
             this.recoveredPop += recovered;
         }
 
+        this.infectedByNeighbors = 0;
+
         this.day++;
     }
 
-    processNeighbours() {
-
-    }
 
     print() {
         console.log("Day: ", this.day);
         console.log("Population: ", this.totalPop);
         console.log("Healthy (targets): ", this.healthyPop);
-        console.log("Infected: ", this.infectedRegularPop+this.infectedSickPop);
+        console.log("Infected: ", this.infectedRegularPop + this.infectedSickPop);
         console.log("   Host: ", this.infectedRegularPop);
         console.log("   Sick: ", this.infectedSickPop);
         console.log("Recovered: ", this.recoveredPop);
@@ -138,8 +147,50 @@ class Cell {
     }
 }
 
-let cell = new Cell(10000, 0.003);
-for(let day = 0; day < 60; day++) {
-    cell.print();
-    cell.process();
+function neighborDiseaseTransmission(neighbor, cell) {
+    if (cell.healthyPop > 0 && (neighbor.infectedRegularPop > 0 || neighbor.infectedSickPop > 0)) {
+        let contactedByNeighbor = (neighbor.infectedRegularPop * neighborAsymptomaticContact + neighbor.infectedSickPop * neighborSymptomaticContact);
+        let infectedByNeighbor = Math.round(contactedByNeighbor * cell.healthyRatio * transmissionRate);
+        cell.infectedByNeighbors += infectedByNeighbor;
+    }
+
+}
+
+//
+function processNeighbors(neighborhood, x, y) {
+
+    if (neighborhood[x - 1] !== undefined && neighborhood[x - 1][y] !== undefined) {
+        neighborDiseaseTransmission(neighborhood[x - 1][y], neighborhood[x][y]);
+    }
+    if (neighborhood[x + 1] !== undefined && neighborhood[x + 1][y] !== undefined) {
+        neighborDiseaseTransmission(neighborhood[x + 1][y], neighborhood[x][y]);
+    }
+    if (neighborhood[x][y - 1] !== undefined) {
+        neighborDiseaseTransmission(neighborhood[x][y - 1], neighborhood[x][y]);
+    }
+    if (neighborhood[x][y + 1] !== undefined) {
+        neighborDiseaseTransmission(neighborhood[x][y + 1], neighborhood[x][y]);
+    }
+
+}
+
+
+//City is a 3x3 grid 
+let city = [];
+for (let x = 0; x < 3; x++) {
+    city[x] = []
+    for (let y = 0; y < 3; y++) {
+        city[x][y] = new Cell(10000, 0.001 * (y + x));
+    }
+}
+
+
+for (let day = 0; day < 50; day++) {
+    for (let x = 0; x < 3; x++) {
+        for (let y = 0; y < 3; y++) {
+            processNeighbors(city, x, y)
+            city[x][y].print();
+            city[x][y].process();
+        }
+    }
 }
