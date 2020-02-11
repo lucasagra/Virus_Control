@@ -81,6 +81,17 @@ class Region {
         this.day++;
     }
 
+    print() {
+        // Printa tabela
+
+        // matriz de infectados de cada celula
+        let data = this.grid.map(x => {
+            return x.map(y => y.infectedSickPop);
+        });
+        console.log("Day: ", this.day);
+        console.table(data);
+        console.log();
+    }
 }
 
 module.exports = Region;

@@ -34,31 +34,21 @@ Definido:
             - Celulas ortogonais possuem uma taxa maior que as diagonais?
 
 */
-
-
-var Cell = require("./cell.js");
 var Region = require("./region.js");
-const appconfig = require("./config.js");
 
+// City is a 20x20 grid with 10000 people each unit
+let city = new Region(20, 10000);
 
-// City is a 10x10 grid with 10000 people each unit
-let city = new Region(30, 10000);
-
-// 1 cell infected (position: x = 4, y = 4)
-city.infectCell(0.05, 4, 4);
+// 1 cell infected (position: x = 7, y = 7)
+city.infectCell(0.05, 7, 7);
 
 // 60 days cycle
 for (let day = 0; day < 60; day++) {
     city.processNeighbors();
     city.processDay();
 
-    // Printa tabela a cada 5 dias
-    if(day%5 == 0){
-        // matriz de infectados de cada celula
-        let data = city.grid.map(x => {
-            return x.map(y => y.infectedSickPop);
-        });
-        console.log("Day: ", day);
-        console.table(data);
+    // A cada 5 dias
+    if(day%5 == 0) {
+        city.print();
     }
 }

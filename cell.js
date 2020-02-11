@@ -74,9 +74,7 @@ class Cell {
 
     }
 
-
-    print(day) {
-        console.log("Day: ", day);
+    print() {
         console.log("Population: ", this.totalPop);
         console.log("Healthy (targets): ", this.healthyPop);
         console.log("Infected: ", this.infectedRegularPop + this.infectedSickPop);
