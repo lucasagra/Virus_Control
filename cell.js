@@ -1,5 +1,3 @@
-const appconfig = require("./config.js");
-
 class Cell {
 
     constructor(pop, infectedRatio) {
@@ -84,6 +82,3 @@ class Cell {
         console.log(" ");
     }
 }
-
-
-module.exports = Cell;

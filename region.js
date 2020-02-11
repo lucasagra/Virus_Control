@@ -1,6 +1,3 @@
-const appconfig = require("./config.js");
-var Cell = require("./cell.js");
-
 function neighborDiseaseTransmission(neighbor, cell) {
     if (cell.healthyPop > 0 && (neighbor.infectedRegularPop > 0 || neighbor.infectedSickPop > 0)) {
 
@@ -93,5 +90,3 @@ class Region {
         console.log();
     }
 }
-
-module.exports = Region;

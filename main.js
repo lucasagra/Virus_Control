@@ -34,12 +34,11 @@ Definido:
             - Celulas ortogonais possuem uma taxa maior que as diagonais?
 
 */
-var Region = require("./region.js");
 
 // City is a 20x20 grid with 10000 people each unit
 let city = new Region(20, 10000);
 
-// 1 cell infected (position: x = 7, y = 7)
+// 1 cell infected (5% at position: x = 7, y = 7)
 city.infectCell(0.05, 7, 7);
 
 // 60 days cycle

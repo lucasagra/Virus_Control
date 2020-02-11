@@ -1,6 +1,5 @@
-    /////////// Global variables
-    
-module.exports = {
+/////////// Global variables
+appconfig = {
 
     //let deathRate = 0;
     //let survivalRate = 1 - deathRate;
