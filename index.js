@@ -54,7 +54,7 @@ let regularPeopleContact = 10;
 
 // 
 let neighborAsymptomaticContact = 0.3;
-let neighborSymptomaticContact = 0.1;
+let neighborSymptomaticContact = 0.15;
 
 // Probability of transmission in contact
 let transmissionRate = 0.1;
@@ -149,7 +149,7 @@ class Cell {
 
 function neighborDiseaseTransmission(neighbor, cell) {
     if (cell.healthyPop > 0 && (neighbor.infectedRegularPop > 0 || neighbor.infectedSickPop > 0)) {
-        let contactedByNeighbor = (neighbor.infectedRegularPop * neighborAsymptomaticContact + neighbor.infectedSickPop * neighborSymptomaticContact);
+        let contactedByNeighbor = (neighbor.infectedRegularPop * (neighborAsymptomaticContact * Math.random()) + neighbor.infectedSickPop * (neighborSymptomaticContact * Math.random()));
         let infectedByNeighbor = Math.round(contactedByNeighbor * cell.healthyRatio * transmissionRate);
         cell.infectedByNeighbors += infectedByNeighbor;
     }
@@ -175,19 +175,19 @@ function processNeighbors(neighborhood, x, y) {
 }
 
 
-//City is a 3x3 grid 
+// City is a 10x10 grid 
 let city = [];
-for (let x = 0; x < 3; x++) {
+for (let x = 0; x < 10; x++) {
     city[x] = []
-    for (let y = 0; y < 3; y++) {
+    for (let y = 0; y < 10; y++) {
         city[x][y] = new Cell(10000, 0.001 * (y + x));
     }
 }
 
-
-for (let day = 0; day < 50; day++) {
-    for (let x = 0; x < 3; x++) {
-        for (let y = 0; y < 3; y++) {
+// 60 days cycle
+for (let day = 0; day < 60; day++) {
+    for (let x = 0; x < 10; x++) {
+        for (let y = 0; y < 10; y++) {
             processNeighbors(city, x, y)
             city[x][y].print();
             city[x][y].process();
