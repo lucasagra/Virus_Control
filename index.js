@@ -33,195 +33,29 @@ Definido:
         -- A taxa de locomocao das pessoas entre as celulas (a populacao eh fixa, nao vai se locomover de fato)
             - Celulas ortogonais possuem uma taxa maior que as diagonais?
 
-
 */
 
-/////////// Global variables of virus
 
-//let deathRate = 0;
-//let survivalRate = 1 - deathRate;
-
-// Incubation time in days (no syntoms)
-let incubationTransmission = true;
-let incubationPeriod = 5;
-
-// Time in days to get better after get sick
-let restorePeriod = 7;
-
-// Average contact of a infected person with other people
-let sickPeopleContact = 1;
-let regularPeopleContact = 7;
-
-// 
-let neighborAsymptomaticContact = 0.3;
-let neighborSymptomaticContact = 0.15;
-
-// Probability of transmission in contact
-let transmissionRate = 0.1;
+var Cell = require("./cell.js");
+var Region = require("./region.js");
+const appconfig = require("./config.js");
 
 
-class Cell {
+// City is a 10x10 grid with 10000 people each unit
+let city = new Region(30, 10000);
 
-    constructor(pop, infectedRatio) {
-
-        // Total cell population
-        this.totalPop = pop;
-
-        // Infected regular population (hosts)
-        this.infectedRegularPop = pop * infectedRatio;
-
-        // Healthy population (targets)
-        this.healthyPop = pop * (1 - infectedRatio);
-
-        // Infected sick population
-        this.infectedSickPop = 0;
-
-        // Recovered population
-        this.recoveredPop = 0;
-
-        // History of people infected per day
-        this.infectedHistory = [this.infectedRegularPop];
-
-        // Current day (starting when the cell is infected)
-        this.day = 1
-
-        // Probability of meeting a healthy person
-        this.healthyRatio = (this.healthyPop) / this.totalPop;
-
-        // Amount of people infected by neighbors
-        this.infectedByNeighbors = 0;
-
-    }
-
-    processDay() {
-
-        // Changed
-        this.healthyRatio = this.healthyPop / this.totalPop;
-
-        //// Healthy -> Infected
-
-        let peopleContactedbyInfectedPeople = this.infectedSickPop * sickPeopleContact;
-
-        if (incubationTransmission) {
-            peopleContactedbyInfectedPeople += this.infectedRegularPop * regularPeopleContact;
-        }
-
-        // Total contacted people * Probability of a person be healthy (target) * Probability of Transmission
-        let newInfected = Math.round(peopleContactedbyInfectedPeople * this.healthyRatio * transmissionRate);
-        
-        // Process infection by neighbour
-        newInfected += this.infectedByNeighbors;
-        this.infectedByNeighbors = 0;
-
-        // Set a limit to new infected people if its bigger than the healthy population
-        if (newInfected > this.healthyPop) {
-            newInfected = this.healthyPop;
-        }
-
-        this.infectedHistory.push(newInfected);
-        this.infectedRegularPop += newInfected;
-        this.healthyPop -= newInfected;
-
-        //// Infected -> Sick
-        if (this.day >= incubationPeriod) {
-            let infectedToSick = this.infectedHistory[this.day - incubationPeriod];
-            this.infectedRegularPop -= infectedToSick;
-            this.infectedSickPop += infectedToSick;
-        }
-
-        //// Sick -> Recover
-        if (this.day >= incubationPeriod + restorePeriod) {
-            let recovered = this.infectedHistory[this.day - incubationPeriod - restorePeriod];
-            this.infectedSickPop -= recovered;
-            this.recoveredPop += recovered;
-        }
-
-        this.day++;
-    }
-
-
-    print() {
-        console.log("Day: ", this.day);
-        console.log("Population: ", this.totalPop);
-        console.log("Healthy (targets): ", this.healthyPop);
-        console.log("Infected: ", this.infectedRegularPop + this.infectedSickPop);
-        console.log("   Host: ", this.infectedRegularPop);
-        console.log("   Sick: ", this.infectedSickPop);
-        console.log("Recovered: ", this.recoveredPop);
-        console.log(" ");
-    }
-}
-
-function neighborDiseaseTransmission(neighbor, cell) {
-    if (cell.healthyPop > 0 && (neighbor.infectedRegularPop > 0 || neighbor.infectedSickPop > 0)) {
-
-        let contactedByNeighbor = neighbor.infectedSickPop * (neighborSymptomaticContact * Math.random());
-
-        if(incubationTransmission) {
-            contactedByNeighbor += neighbor.infectedRegularPop * (neighborAsymptomaticContact * Math.random());
-        }
-
-        let infectedByNeighbor = Math.round(contactedByNeighbor * cell.healthyRatio * transmissionRate);
-        cell.infectedByNeighbors += infectedByNeighbor;
-    }
-
-}
-
-//
-function processNeighbors(neighborhood, x, y) {
-
-    if (neighborhood[x - 1] !== undefined && neighborhood[x - 1][y] !== undefined) {
-        neighborDiseaseTransmission(neighborhood[x - 1][y], neighborhood[x][y]);
-    }
-    if (neighborhood[x + 1] !== undefined && neighborhood[x + 1][y] !== undefined) {
-        neighborDiseaseTransmission(neighborhood[x + 1][y], neighborhood[x][y]);
-    }
-    if (neighborhood[x][y - 1] !== undefined) {
-        neighborDiseaseTransmission(neighborhood[x][y - 1], neighborhood[x][y]);
-    }
-    if (neighborhood[x][y + 1] !== undefined) {
-        neighborDiseaseTransmission(neighborhood[x][y + 1], neighborhood[x][y]);
-    }
-
-}
-
-// function printGrid(grid) {
-//     let str = ""
-//     for(let x = 0; x < grid.length; x++) {
-//         for(let y = 0; y < grid[x].length; y++) {
-//             str += grid[x][y].infectedSickPop + " ";
-//         }
-//         str += "\n";
-//     }
-//     str += "\n";
-//     process.stdout.write(str);
-// }
-
-// City is a 10x10 grid 
-let city = [];
-for (let x = 0; x < 10; x++) {
-    city[x] = []
-    for (let y = 0; y < 10; y++) {
-        city[x][y] = new Cell(10000, 0);
-    }
-}
-// 1 cell infected
-city[4][4] = new Cell(10000, 0.05);
+// 1 cell infected (position: x = 4, y = 4)
+city.infectCell(0.05, 4, 4);
 
 // 60 days cycle
 for (let day = 0; day < 60; day++) {
-    for (let x = 0; x < city.length; x++) {
-        for (let y = 0; y < city[x].length; y++) {
-            processNeighbors(city, x, y)
-            city[x][y].processDay();
-             // city[x][y].print();
-        }
-    }
+    city.processNeighbors();
+    city.processDay();
 
     // Printa tabela a cada 5 dias
     if(day%5 == 0){
         // matriz de infectados de cada celula
-        let data = city.map(x => {
+        let data = city.grid.map(x => {
             return x.map(y => y.infectedSickPop);
         });
         console.log("Day: ", day);
