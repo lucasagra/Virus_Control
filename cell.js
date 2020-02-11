@@ -1,6 +1,6 @@
 class Cell {
 
-    constructor(pop, infectedRatio) {
+    constructor(pop, infectedRatio, x, y) {
 
         // Total cell population
         this.totalPop = pop;
@@ -26,6 +26,9 @@ class Cell {
         // Amount of people infected by neighbors
         this.infectedByNeighbors = 0;
 
+        this.x = x;
+
+        this.y = y;
     }
 
     processDay(day) {
@@ -80,5 +83,16 @@ class Cell {
         console.log("   Sick: ", this.infectedSickPop);
         console.log("Recovered: ", this.recoveredPop);
         console.log(" ");
+    }
+
+    draw(i, j, size) {
+        let sickRate = (this.infectedSickPop + this.infectedRegularPop)/this.totalPop;
+        
+        // sickRate -> 1 -> red
+        // sickRate -> 0 -> white
+        fill(255, 255*(1-sickRate), 255*(1-sickRate));
+
+        // draw rectangle
+        rect(1 + j*size, 1 + i*size, size, size);
     }
 }

@@ -1,0 +1,23 @@
+
+html, body {
+    height: 100%;
+}
+
+h1 {
+    display: block;
+    text-align: center;
+    height: 70px;
+}
+
+body {
+    margin: 7%;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    padding-bottom: 20px;
+    width: 50%;
+    margin: auto;
+}

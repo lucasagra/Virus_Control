@@ -4,14 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Disease Simulator</title>
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="p5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+ 
+</head>
+<body>
     
+    <h1>Disease Simulator</h1>
+
+    <div class="jumbotron">
+
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <button class="btn btn-primary" onclick="nextDay()">Next Day</button>
+                    
+                    <h3> Current day: <span id="day">1</span></h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="canvasContainer"></div>    
+        <p></p>
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <button class="btn btn-primary" onclick="reset()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="jumbotron">
+        <form id = "form1"  action="JavaScript:submitForm()">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                <label for="fincp">Incubation Period (days)</label>
+                <input type="text" class="form-control" id="fincp" placeholder="Days to get sick">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="frestp">Restore Period (days)</label>
+                    <input type="text" class="form-control" id="frestp" placeholder="Days to recover after sick">
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="favgsc">Avg People Contact (sick)</label>
+                    <input type="text" class="form-control" id="favgsc" placeholder="Avarage number of contacts">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="favghc">Avg People Contact (healthy)</label>
+                    <input type="text" class="form-control" id="favghc" placeholder="Avarage number of contacts">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                <label for="fnac">Neighbor Asymptomatic Contact</label>
+                <input type="text" class="form-control" id="fnac" placeholder="">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="fnsc">Neighbor Symptomatic Contact</label>
+                    <input type="text" class="form-control" id="fnsc" placeholder="">
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="ftransrate">Transmission Rate</label>
+                    <input type="text" class="form-control" id="ftransrate" placeholder="Rate of transmission per contact">
+                </div>
+
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="finctr">
+                <label class="form-check-label" for="finctr">
+                    Incubation Transmission
+                </label>
+            </div>
+            <div class="col-md-12 text-center"> 
+                <input type="submit" class="btn btn-primary" value="Change" value="Update" >
+            </div>
+          
+        </form>
+    </div>
+
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="cell.js"></script>
     <script type="text/javascript" src="region.js"></script>
     <script type="text/javascript" src="main.js"></script>
-</head>
-<body>
-    
+    <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+    <script src="bootstrap.min.js"></script>
+
 </body>
 </html>

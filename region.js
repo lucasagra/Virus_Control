@@ -33,7 +33,7 @@ class Region {
         for (let x = 0; x < size; x++) {
             this.grid[x] = []
             for (let y = 0; y < size; y++) {
-                this.grid[x][y] = new Cell(densityPop, 0);
+                this.grid[x][y] = new Cell(densityPop, 0, x, y);
             }
         }
 
@@ -78,6 +78,7 @@ class Region {
         this.day++;
     }
 
+
     print() {
         // Printa tabela
 
@@ -88,5 +89,14 @@ class Region {
         console.log("Day: ", this.day);
         console.table(data);
         console.log();
+    }
+
+    
+    draw(size) {
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.size; j++) {
+                this.grid[i][j].draw(i, j, size);    
+            }
+        }
     }
 }

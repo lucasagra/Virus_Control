@@ -33,21 +33,43 @@ Definido:
         -- A taxa de locomocao das pessoas entre as celulas (a populacao eh fixa, nao vai se locomover de fato)
             - Celulas ortogonais possuem uma taxa maior que as diagonais?
 
-*/
+*/  
 
 // City is a 20x20 grid with 10000 people each unit
-let city = new Region(20, 10000);
-
+city = new Region(20, 10000);
 // 1 cell infected (5% at position: x = 7, y = 7)
 city.infectCell(0.05, 7, 7);
 
-// 60 days cycle
-for (let day = 0; day < 60; day++) {
+let day = 1;
+let size = 3;
+
+function reset () {
+    city = new Region(20, 10000);
+    city.infectCell(0.05, 7, 7);
+    day = 1;
+    document.querySelector("#day").textContent = day;
+}
+
+function nextDay() {
     city.processNeighbors();
     city.processDay();
-
-    // A cada 5 dias
-    if(day%5 == 0) {
-        city.print();
-    }
+    day++;
+    document.querySelector("#day").textContent = day;
 }
+
+function windowResized() {
+    resizeCanvas(city.size * size + 2, city.size * size + 2);
+}
+
+function setup() {
+    size = (windowWidth / (city.size * 2.0));
+    let myCanvas = createCanvas(city.size * size + 2, city.size * size + 2).style('display', 'block').style('margin', 'auto');
+    myCanvas.parent("canvasContainer");
+}
+
+function draw() {
+    background(255);
+    size = (windowWidth/(city.size*2.0));
+    city.draw(size);
+}
+
