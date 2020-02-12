@@ -4,11 +4,11 @@ function neighborDiseaseTransmission(neighbor, cell) {
         let contactedByNeighbor = neighbor.infectedSickPop * (appconfig.neighborSymptomaticContact * Math.random());
 
         if(appconfig.incubationTransmission) {
-            contactedByNeighbor += neighbor.infectedRegularPop * (appconfig.neighborAsymptomaticContact * Math.random());
+            contactedByNeighbor += (neighbor.infectedRegularPop * (appconfig.neighborAsymptomaticContact * Math.random()));
         }
 
-        let infectedByNeighbor = Math.round(contactedByNeighbor * cell.healthyRatio * appconfig.transmissionRate);
-        cell.infectedByNeighbors += infectedByNeighbor;
+        contactedByNeighbor = Math.round(contactedByNeighbor);
+        cell.contactedByNeighbor += contactedByNeighbor;
     }
 
 }
@@ -41,7 +41,7 @@ class Region {
 
     infectCell(rate, x, y) {
         if(x >= 0 && x < this.size && y >= 0 && y < this.size) {
-            this.grid[x][y] = new Cell(this.densityPop, rate);
+            this.grid[x][y] = new Cell(this.densityPop, rate, x, y);
         } else {
             console.log("Coordinates out of range");
         }
@@ -78,7 +78,6 @@ class Region {
         this.day++;
     }
 
-
     print() {
         // Printa tabela
 
@@ -91,11 +90,10 @@ class Region {
         console.log();
     }
 
-    
-    draw(size) {
+    drawRegion(size) {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
-                this.grid[i][j].draw(i, j, size);    
+                this.grid[i][j].draw(size);    
             }
         }
     }

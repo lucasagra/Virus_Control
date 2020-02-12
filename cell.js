@@ -23,16 +23,18 @@ class Cell {
         // Probability of meeting a healthy person
         this.healthyRatio = (this.healthyPop) / this.totalPop;
 
-        // Amount of people infected by neighbors
-        this.infectedByNeighbors = 0;
+        // Amount of people contacted by sick neighbors
+        this.contactedByNeighbor = 0;
 
+        // X position in the grid
         this.x = x;
 
+        // Y position in the grid
         this.y = y;
     }
 
     processDay(day) {
-        // Changed
+        // Targets available ratio
         this.healthyRatio = this.healthyPop / this.totalPop;
 
         //// Healthy -> Infected
@@ -43,12 +45,13 @@ class Cell {
             peopleContactedbyInfectedPeople += this.infectedRegularPop * appconfig.regularPeopleContact;
         }
 
+        // Process infection by neighbour
+        peopleContactedbyInfectedPeople += this.contactedByNeighbor;
+        this.contactedByNeighbor = 0;
+
         // Total contacted people * Probability of a person be healthy (target) * Probability of Transmission
         let newInfected = Math.round(peopleContactedbyInfectedPeople * this.healthyRatio * appconfig.transmissionRate);
-        
-        // Process infection by neighbour
-        newInfected += this.infectedByNeighbors;
-        this.infectedByNeighbors = 0;
+
 
         // Set a limit to new infected people if its bigger than the healthy population
         if (newInfected > this.healthyPop) {
@@ -85,14 +88,14 @@ class Cell {
         console.log(" ");
     }
 
-    draw(i, j, size) {
-        let sickRate = (this.infectedSickPop + this.infectedRegularPop)/this.totalPop;
+    draw(size) {
+        let sickRate = (this.infectedSickPop)/this.totalPop;
         
         // sickRate -> 1 -> red
         // sickRate -> 0 -> white
         fill(255, 255*(1-sickRate), 255*(1-sickRate));
 
         // draw rectangle
-        rect(1 + j*size, 1 + i*size, size, size);
+        rect(1 + this.y*size, 1 + this.x*size, size, size);
     }
 }

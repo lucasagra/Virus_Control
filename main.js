@@ -37,24 +37,23 @@ Definido:
 
 // City is a 20x20 grid with 10000 people each unit
 city = new Region(20, 10000);
-// 1 cell infected (5% at position: x = 7, y = 7)
-city.infectCell(0.05, 7, 7);
 
-let day = 1;
+// 1 cell infected (5% at position: x = 7, y = 7)
+city.infectCell(0.05, 5, 5);
+
 let size = 3;
 
 function reset () {
     city = new Region(20, 10000);
-    city.infectCell(0.05, 7, 7);
-    day = 1;
-    document.querySelector("#day").textContent = day;
+    city.infectCell(0.05, 5, 5);
+    document.querySelector("#day").textContent = city.day;
 }
 
 function nextDay() {
     city.processNeighbors();
     city.processDay();
-    day++;
-    document.querySelector("#day").textContent = day;
+    document.querySelector("#day").textContent = city.day;
+    // city.print();
 }
 
 function windowResized() {
@@ -62,14 +61,15 @@ function windowResized() {
 }
 
 function setup() {
-    size = (windowWidth / (city.size * 2.0));
+    frameRate(10);
+    size = (windowWidth / (city.size * 3.0));
     let myCanvas = createCanvas(city.size * size + 2, city.size * size + 2).style('display', 'block').style('margin', 'auto');
     myCanvas.parent("canvasContainer");
 }
 
 function draw() {
     background(255);
-    size = (windowWidth/(city.size*2.0));
-    city.draw(size);
+    size = (windowWidth/(city.size*3.0));
+    city.drawRegion(size);
 }
 
