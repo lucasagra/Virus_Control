@@ -36,16 +36,18 @@ Definido:
 */  
 
 // City is a 20x20 grid with 10000 people each unit
-city = new Region(20, 10000);
+city = new Region(25, 10000);
 
 // 1 cell infected (5% at position: x = 7, y = 7)
-city.infectCell(0.05, 5, 5);
+city.infectCell(0.05, 7, 7);
 
-let size = 3;
+let selectedCellx = 0;
+let selectedCelly = 0;
+let size;
 
 function reset () {
-    city = new Region(20, 10000);
-    city.infectCell(0.05, 5, 5);
+    city = new Region(25, 10000);
+    city.infectCell(0.05, 3, 3);
     document.querySelector("#day").textContent = city.day;
 }
 
@@ -61,15 +63,25 @@ function windowResized() {
 }
 
 function setup() {
-    frameRate(10);
+    frameRate(30);
+    background(255);
     size = (windowWidth / (city.size * 3.0));
-    let myCanvas = createCanvas(city.size * size + 2, city.size * size + 2).style('display', 'block').style('margin', 'auto');
+    let myCanvas = createCanvas(city.size * size + 2, (city.size)*size + 2).style('display', 'block').style('margin', 'auto');
     myCanvas.parent("canvasContainer");
 }
 
 function draw() {
     background(255);
-    size = (windowWidth/(city.size*3.0));
+    size = (windowWidth/(city.size * 3.0));
     city.drawRegion(size);
+
+    document.querySelector("#x").textContent = selectedCellx;
+    document.querySelector("#y").textContent = selectedCelly;
+    let cell = city.grid[selectedCellx][selectedCelly];
+    document.querySelector("#totpop").textContent = cell.totalPop;
+    document.querySelector("#healthy").textContent = cell.healthyPop;
+    document.querySelector("#infasymp").textContent = cell.infectedRegularPop;
+    document.querySelector("#infsymp").textContent = cell.infectedSickPop;
+    document.querySelector("#recovered").textContent = cell.recoveredPop;
 }
 

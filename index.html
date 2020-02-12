@@ -27,9 +27,29 @@
                 </div>
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-8">
+
+                <div id="canvasContainer"></div>    
+                <p></p>
+        
+            </div>
+            <div class="form-group col-md-4">
+                
+                <h5> Selected Cell: [<span id="x">x</span>] [<span id="y">y</span>]</h5>
+                <p> Total Population: <span id="totpop"></span></p>
+                <p> Healthy: <span id="healthy"></span></p>
+                <p> Infected Asymptomatic: <span id="infasymp"></span></p>
+                <p> Infected Symptomatic: <span id="infsymp"></span></p>
+                <p> Recovered: <span id="recovered"></span></p>
+                
+            </div>
+
+        </div>
 
         <div id="canvasContainer"></div>    
         <p></p>
+
         <div class="container">
             <div class="row">
                 <div class="col text-center">
@@ -63,11 +83,11 @@
 
             <div class="form-row">
                 <div class="form-group col-md-4">
-                <label for="fnac">Neighbor Asymptomatic Contact</label>
+                <label for="fnac">Neighbor Comute Rate</label>
                 <input type="text" class="form-control" id="fnac" placeholder="">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="fnsc">Neighbor Symptomatic Contact</label>
+                    <label for="fnsc">Neighbor Symptomatic Comute Rate</label>
                     <input type="text" class="form-control" id="fnsc" placeholder="">
                 </div>
 

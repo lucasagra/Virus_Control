@@ -89,13 +89,39 @@ class Cell {
     }
 
     draw(size) {
-        let sickRate = (this.infectedSickPop)/this.totalPop;
-        
+        let x = this.x * size;
+        let y = this.y * size;
+
+        let sickRate = (this.infectedSickPop + this.infectedRegularPop)/this.totalPop;
         // sickRate -> 1 -> red
         // sickRate -> 0 -> white
-        fill(255, 255*(1-sickRate), 255*(1-sickRate));
+        let r = 255;
+        let g = 255*(1-sickRate);
+        let b = 255*(1-sickRate);
 
-        // draw rectangle
-        rect(1 + this.y*size, 1 + this.x*size, size, size);
+        let dist_mouse = dist(mouseX, mouseY, x + size/2, y + size/2);
+
+        // selected cell
+        if(dist_mouse <= size/2) {
+            fill(r-50, g-50, b-50);
+            selectedCellx = this.x;
+            selectedCelly = this.y;
+        } else {
+            fill(r, g, b);
+        }
+
+        // draw cell
+        rect(1 + x, 1 + y, size, size);    
+
+
+
+        // line(x + size/2, y + size/2, mouseX, mouseY);
+        // push();
+        // translate((x + mouseX) / 2, (y + mouseY) / 2);
+        // rotate(atan2(mouseY - y, mouseX - x));
+        // text(nfc(dist_mouse, 1), 0, -5);
+        // pop();
     }
+
+
 }
